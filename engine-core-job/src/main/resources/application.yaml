@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: batch-engine-core
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/batch_engine
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://localhost:27017/batch_engine}
+
+  batch:
+    job:
+      enabled: false        # no lanzar jobs al iniciar
+    jdbc:
+      initialize-schema: always  # crea tablas de metadata Spring Batch
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=100,expireAfterWrite=10m
+
+server:
+  port: 8083
+
+async:
+  core-pool-size: 4
+  max-pool-size: 8
+  queue-capacity: 100
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+
+logging:
+  level:
+    com.xanxs: DEBUG
+    org.springframework.batch: INFO

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003" author="batch-engine">
+        <createTable tableName="bte_field_transformation">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="field_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_transformation_field"
+                    references="bte_template_field(id)"/>
+            </column>
+
+            <column name="transformer_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <!--
+                Valores posibles:
+                trim | uppercase | lowercase | parseDate | formatDate |
+                replace | removeLeadingZeros | toInteger | toLong |
+                formatRut | regexReplace
+            -->
+
+            <column name="parameters" type="JSONB"/>
+            <!--
+                Parámetros opcionales según el transformer. Ejemplos:
+                formatDate    → {"inputFormat":"yyyyMMdd","outputFormat":"yyyy-MM-dd"}
+                replace       → {"target":"_","replacement":" "}
+                regexReplace  → {"pattern":"[^0-9]","replacement":""}
+            -->
+
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Define el orden de ejecución en la cadena de transformaciones -->
+
+        </createTable>
+
+        <createIndex tableName="bte_field_transformation"
+                     indexName="idx_transformation_field_id">
+            <column name="field_id"/>
+        </createIndex>
+
+        <!-- Orden único por campo: no puede haber 2 transformaciones en el mismo order_index -->
+        <addUniqueConstraint
+            tableName="bte_field_transformation"
+            columnNames="field_id, order_index"
+            constraintName="uq_transformation_field_order"/>
+
+        <sql>
+            COMMENT ON TABLE bte_field_transformation IS 'Cadena de transformaciones aplicadas a cada campo';
+            COMMENT ON COLUMN bte_field_transformation.parameters IS 'Parámetros en formato JSON según el tipo de transformación';
+            COMMENT ON COLUMN bte_field_transformation.order_index IS 'Orden de ejecución, menor número se ejecuta primero';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

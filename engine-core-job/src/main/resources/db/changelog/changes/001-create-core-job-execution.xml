@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="core-001" author="batch-engine">
+        <createTable tableName="bte_core_execution">
+
+            <column name="id" type="VARCHAR(100)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <!-- UUID generado por el core -->
+
+            <column name="job_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="template_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_path" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- RUNNING | COMPLETED | FAILED | STOPPED -->
+
+            <column name="total_records" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="success_records" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="error_records" type="INTEGER" defaultValueNumeric="0"/>
+
+            <column name="started_at" type="TIMESTAMP"/>
+            <column name="finished_at" type="TIMESTAMP"/>
+
+            <column name="error_message" type="TEXT"/>
+            <!-- Error fatal si el job falla completamente -->
+
+        </createTable>
+
+        <createIndex tableName="bte_core_execution"
+                     indexName="idx_core_execution_status">
+            <column name="status"/>
+        </createIndex>
+
+        <sql>
+            COMMENT ON TABLE bte_core_execution IS 'Estado de ejecuciones manejadas por el core';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="004" author="batch-engine">
+        <createTable tableName="bte_destination">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="template_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_destination_template"
+                    references="bte_template(id)"/>
+            </column>
+
+            <column name="destination_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Valores: POSTGRESQL | MONGODB | KAFKA | FILE | REST -->
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Nombre descriptivo del destino -->
+
+            <column name="target_table" type="VARCHAR(100)"/>
+            <!-- Para POSTGRESQL: nombre de la tabla destino -->
+
+            <column name="target_collection" type="VARCHAR(100)"/>
+            <!-- Para MONGODB: nombre de la colección destino -->
+
+            <column name="target_topic" type="VARCHAR(100)"/>
+            <!-- Para KAFKA: nombre del topic -->
+
+            <column name="target_path" type="VARCHAR(500)"/>
+            <!-- Para FILE: ruta del archivo de salida -->
+
+            <column name="target_url" type="VARCHAR(500)"/>
+            <!-- Para REST: URL del endpoint -->
+
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="extra_config" type="JSONB"/>
+            <!--
+                Configuración adicional según tipo. Ejemplos:
+                KAFKA  → {"bootstrap.servers":"localhost:9092"}
+                REST   → {"method":"POST","headers":{"Authorization":"Bearer token"}}
+                FILE   → {"encoding":"UTF-8","append":false}
+            -->
+
+        </createTable>
+
+        <createIndex tableName="bte_destination"
+                     indexName="idx_destination_template_id">
+            <column name="template_id"/>
+        </createIndex>
+
+        <sql>
+            COMMENT ON TABLE bte_destination IS 'Destinos de escritura configurados por plantilla';
+            COMMENT ON COLUMN bte_destination.extra_config IS 'Configuración adicional en JSON según el tipo de destino';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

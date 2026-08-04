@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001" author="batch-engine">
+        <createTable tableName="bte_template">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="description" type="VARCHAR(500)"/>
+
+            <column name="file_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Valores: FIXED | DELIMITED -->
+
+            <column name="separator" type="VARCHAR(10)"/>
+            <!-- Solo aplica si file_type = DELIMITED -->
+
+            <column name="encoding" type="VARCHAR(20)" defaultValue="UTF-8">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="skip_empty_lines" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="on_error" type="VARCHAR(20)" defaultValue="CONTINUE">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Valores: STOP | CONTINUE -->
+
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <sql>
+            COMMENT ON TABLE bte_template IS 'Plantillas de configuración para el motor batch';
+            COMMENT ON COLUMN bte_template.file_type IS 'FIXED = longitud fija, DELIMITED = separado por delimitador';
+            COMMENT ON COLUMN bte_template.on_error IS 'STOP = detener proceso, CONTINUE = omitir registro con error';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

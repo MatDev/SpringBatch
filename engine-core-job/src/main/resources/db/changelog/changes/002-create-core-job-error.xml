@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="core-002" author="batch-engine">
+        <createTable tableName="bte_core_error">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="execution_id" type="VARCHAR(100)">
+                <constraints nullable="false"
+                             foreignKeyName="fk_core_error_execution"
+                             references="bte_core_execution(id)"/>
+            </column>
+
+            <column name="line_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_content" type="TEXT"/>
+
+            <column name="error_description" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="exception_detail" type="TEXT"/>
+
+            <column name="created_at" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createIndex tableName="bte_core_error"
+                     indexName="idx_core_error_execution_id">
+            <column name="execution_id"/>
+        </createIndex>
+
+        <sql>
+            COMMENT ON TABLE bte_core_error IS 'Errores por línea registrados durante la ejecución';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002" author="batch-engine">
+        <createTable tableName="bte_template_field">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="template_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_field_template"
+                    references="bte_template(id)"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="field_type" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Valores: STRING | INTEGER | LONG | DECIMAL | DATE | BOOLEAN -->
+
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Para FIXED: posición inicio (0-based). Para DELIMITED: índice columna -->
+
+            <column name="length" type="INTEGER"/>
+            <!-- Solo aplica si file_type = FIXED -->
+
+            <column name="required" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="default_value" type="VARCHAR(255)"/>
+
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Orden de aparición en la plantilla -->
+
+        </createTable>
+
+        <!-- Índice para búsqueda por plantilla -->
+        <createIndex tableName="bte_template_field"
+                     indexName="idx_field_template_id">
+            <column name="template_id"/>
+        </createIndex>
+
+        <!-- Unicidad: no puede haber 2 campos con mismo nombre en la misma plantilla -->
+        <addUniqueConstraint
+            tableName="bte_template_field"
+            columnNames="template_id, name"
+            constraintName="uq_field_template_name"/>
+
+        <sql>
+            COMMENT ON TABLE bte_template_field IS 'Campos definidos por cada plantilla';
+            COMMENT ON COLUMN bte_template_field.position IS 'Para FIXED: posición de inicio (0-based). Para DELIMITED: índice de columna';
+            COMMENT ON COLUMN bte_template_field.length IS 'Longitud del campo, solo aplica para archivos de longitud fija';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

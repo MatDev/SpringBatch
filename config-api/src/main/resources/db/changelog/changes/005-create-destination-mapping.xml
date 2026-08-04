@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="005" author="batch-engine">
+        <createTable tableName="bte_destination_mapping">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="destination_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_mapping_destination"
+                    references="bte_destination(id)"/>
+            </column>
+
+            <column name="field_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Nombre del campo en la plantilla (bte_template_field.name) -->
+
+            <column name="target_column" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Nombre de columna/atributo en el destino -->
+
+            <column name="order_index" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createIndex tableName="bte_destination_mapping"
+                     indexName="idx_mapping_destination_id">
+            <column name="destination_id"/>
+        </createIndex>
+
+        <!-- No puede haber 2 mapeos del mismo campo para el mismo destino -->
+        <addUniqueConstraint
+            tableName="bte_destination_mapping"
+            columnNames="destination_id, field_name"
+            constraintName="uq_mapping_destination_field"/>
+
+        <sql>
+            COMMENT ON TABLE bte_destination_mapping IS 'Mapeo entre campos de la plantilla y columnas del destino';
+            COMMENT ON COLUMN bte_destination_mapping.field_name IS 'Referencia al nombre del campo en bte_template_field';
+            COMMENT ON COLUMN bte_destination_mapping.target_column IS 'Nombre de la columna, atributo o key en el destino';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002" author="batch-engine">
+        <createTable tableName="bte_job_execution_error">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="job_execution_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_error_job_execution"
+                             references="bte_job_execution(id)"/>
+            </column>
+
+            <column name="line_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_content" type="TEXT"/>
+            <!-- Contenido de la línea que falló -->
+
+            <column name="error_description" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="exception_detail" type="TEXT"/>
+            <!-- Stack trace o detalle técnico del error -->
+
+            <column name="created_at" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createIndex tableName="bte_job_execution_error"
+                     indexName="idx_error_job_execution_id">
+            <column name="job_execution_id"/>
+        </createIndex>
+
+        <sql>
+            COMMENT ON TABLE bte_job_execution_error IS 'Errores registrados por línea durante la ejecución de un job';
+            COMMENT ON COLUMN bte_job_execution_error.line_content IS 'Contenido raw de la línea que generó el error';
+            COMMENT ON COLUMN bte_job_execution_error.exception_detail IS 'Stack trace o detalle técnico del error';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001" author="batch-engine">
+        <createTable tableName="bte_job_execution">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="job_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Nombre del job registrado en el core -->
+
+            <column name="template_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Referencia lógica a bte_template (en config-api) -->
+
+            <column name="file_path" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- PENDING | RUNNING | COMPLETED | FAILED | STOPPED -->
+
+            <column name="started_at" type="TIMESTAMP"/>
+
+            <column name="finished_at" type="TIMESTAMP"/>
+
+            <column name="total_records" type="INTEGER" defaultValueNumeric="0"/>
+
+            <column name="success_records" type="INTEGER" defaultValueNumeric="0"/>
+
+            <column name="error_records" type="INTEGER" defaultValueNumeric="0"/>
+
+            <column name="requested_by" type="VARCHAR(100)"/>
+            <!-- Usuario o sistema que solicitó la ejecución -->
+
+            <column name="core_execution_id" type="VARCHAR(100)"/>
+            <!-- ID que retorna el core al lanzar el job -->
+
+            <column name="created_at" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createIndex tableName="bte_job_execution"
+                     indexName="idx_job_execution_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="bte_job_execution"
+                     indexName="idx_job_execution_template_id">
+            <column name="template_id"/>
+        </createIndex>
+
+        <sql>
+            COMMENT ON TABLE bte_job_execution IS 'Registro de ejecuciones de jobs batch';
+            COMMENT ON COLUMN bte_job_execution.status IS 'PENDING | RUNNING | COMPLETED | FAILED | STOPPED';
+            COMMENT ON COLUMN bte_job_execution.core_execution_id IS 'ID de ejecución retornado por el batch-engine-core';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>
