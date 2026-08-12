@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { MaterialModule } from '../../../../shared/material/material.module';
 
@@ -15,6 +16,7 @@ import {
   selector: 'app-template-list',
   standalone: true,
   imports: [
+    CommonModule,
     RouterModule,
     MaterialModule
   ],

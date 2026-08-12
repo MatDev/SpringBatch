@@ -5,6 +5,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../../../../shared/material/material.module';
 
@@ -22,6 +23,7 @@ import {
   selector: 'app-template-form',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MaterialModule
   ],
