@@ -1,0 +1,254 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Templates</h1>
+
+      <p>
+        Administración de configuraciones de procesamiento.
+      </p>
+
+    </div>
+
+    <button
+      mat-flat-button
+      color="primary"
+      routerLink="/templates/new">
+
+      <mat-icon>add</mat-icon>
+
+      Nuevo Template
+
+    </button>
+
+  </div>
+
+
+  @if (errorMessage) {
+
+  <mat-card class="error-card">
+
+    <mat-card-content>
+
+      {{ errorMessage }}
+
+    </mat-card-content>
+
+  </mat-card>
+
+  }
+
+
+  <mat-card>
+
+    <mat-card-content>
+
+      @if (loading) {
+
+      <div class="loading">
+
+        <mat-spinner diameter="40"></mat-spinner>
+
+      </div>
+
+      } @else {
+
+      <div class="table-container">
+
+        <table
+          mat-table
+          [dataSource]="templates">
+
+
+          <ng-container matColumnDef="name">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef>
+
+              Nombre
+
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let template">
+
+              {{ template.name }}
+
+            </td>
+
+          </ng-container>
+
+
+          <ng-container matColumnDef="fileType">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef>
+
+              Tipo
+
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let template">
+
+              {{ template.fileType }}
+
+            </td>
+
+          </ng-container>
+
+
+          <ng-container matColumnDef="encoding">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef>
+
+              Encoding
+
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let template">
+
+              {{ template.encoding }}
+
+            </td>
+
+          </ng-container>
+
+
+          <ng-container matColumnDef="active">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef>
+
+              Estado
+
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let template">
+
+              @if (template.active) {
+
+              <span class="status active">
+                    Activo
+                  </span>
+
+              } @else {
+
+              <span class="status inactive">
+                    Inactivo
+                  </span>
+
+              }
+
+            </td>
+
+          </ng-container>
+
+
+          <ng-container matColumnDef="actions">
+
+            <th
+              mat-header-cell
+              *matHeaderCellDef>
+
+              Acciones
+
+            </th>
+
+            <td
+              mat-cell
+              *matCellDef="let template">
+
+              <button
+                mat-icon-button
+                matTooltip="Ver">
+
+                <mat-icon>
+                  visibility
+                </mat-icon>
+
+              </button>
+
+
+              <button
+                mat-icon-button
+                matTooltip="Editar">
+
+                <mat-icon>
+                  edit
+                </mat-icon>
+
+              </button>
+
+
+              <button
+                mat-icon-button
+                matTooltip="Eliminar">
+
+                <mat-icon>
+                  delete
+                </mat-icon>
+
+              </button>
+
+            </td>
+
+          </ng-container>
+
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns">
+          </tr>
+
+
+          <tr
+            mat-row
+            *matRowDef="
+                let row;
+                columns: displayedColumns;
+              ">
+          </tr>
+
+
+        </table>
+
+
+        @if (templates.length === 0) {
+
+        <div class="empty">
+
+          <mat-icon>
+            inventory_2
+          </mat-icon>
+
+          <p>
+            No existen templates configurados.
+          </p>
+
+        </div>
+
+        }
+
+      </div>
+
+      }
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>
