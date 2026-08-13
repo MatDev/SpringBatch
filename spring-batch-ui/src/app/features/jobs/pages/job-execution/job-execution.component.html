@@ -1,1 +1,259 @@
-<p>job-execution works!</p>
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>Jobs</h1>
+      <p>
+        Ejecuta jobs y consulta su estado.
+      </p>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        {{ errorMessage }}
+      </mat-card-content>
+    </mat-card>
+  }
+
+
+  <mat-card>
+    <mat-card-content>
+
+      <h2>Ejecutar job</h2>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="execute()">
+
+        <div class="form-grid">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre del job</mat-label>
+            <input
+              matInput
+              formControlName="jobName"
+              placeholder="importJob">
+            @if (form.controls.jobName.hasError('required')) {
+              <mat-error>
+                El nombre del job es obligatorio.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Template</mat-label>
+            <select
+              matNativeControl
+              formControlName="templateId">
+              @for (template of templates; track template.id) {
+                <option [value]="template.id">
+                  {{ template.name }}
+                </option>
+              }
+            </select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>File path</mat-label>
+            <input
+              matInput
+              formControlName="filePath"
+              placeholder="C:\data\file.csv">
+            @if (form.controls.filePath.hasError('required')) {
+              <mat-error>
+                La ruta del archivo es obligatoria.
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Requested by</mat-label>
+            <input
+              matInput
+              formControlName="requestedBy"
+              placeholder="admin">
+          </mat-form-field>
+
+        </div>
+
+        <div class="actions">
+          <button
+            type="submit"
+            mat-flat-button
+            color="primary"
+            [disabled]="saving || templates.length === 0">
+            @if (saving) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Ejecutar
+            }
+          </button>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+
+
+  <mat-card>
+    <mat-card-content>
+
+      <div class="list-header">
+        <h2>Historial de ejecuciones</h2>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <select
+            matNativeControl
+            [value]="selectedStatus"
+            (change)="onStatusChange($event)">
+            @for (
+              status of statusFilters;
+              track status
+            ) {
+              <option [value]="status">
+                {{ status }}
+              </option>
+            }
+          </select>
+        </mat-form-field>
+      </div>
+
+      @if (loading) {
+        <div class="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table
+            mat-table
+            [dataSource]="jobs">
+
+            <ng-container matColumnDef="id">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                ID
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.id }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="jobName">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Job
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.jobName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="templateId">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Template
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.templateId }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Estado
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.status }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="startedAt">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Inicio
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.startedAt || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="finishedAt">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Fin
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.finishedAt || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Acciones
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                <button
+                  mat-icon-button
+                  matTooltip="Refrescar estado"
+                  (click)="refreshStatus(job.id)">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns">
+            </tr>
+            <tr
+              mat-row
+              *matRowDef="
+                let row;
+                columns: displayedColumns;
+              ">
+            </tr>
+
+          </table>
+
+          @if (jobs.length === 0) {
+            <div class="empty">
+              <mat-icon>history</mat-icon>
+              <p>
+                No existen ejecuciones para el filtro seleccionado.
+              </p>
+            </div>
+          }
+        </div>
+      }
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

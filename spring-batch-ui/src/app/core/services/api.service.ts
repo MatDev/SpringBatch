@@ -40,6 +40,12 @@ export class ApiService {
 
   }
 
+  patch<T>(url: string, body: unknown): Observable<T> {
+
+    return this.http.patch<T>(url, body);
+
+  }
+
   delete<T>(url: string): Observable<T> {
 
     return this.http.delete<T>(url);

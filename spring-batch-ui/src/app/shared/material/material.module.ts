@@ -12,6 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const MATERIAL_MODULES = [
   MatSidenavModule,
@@ -25,7 +27,9 @@ const MATERIAL_MODULES = [
   MatFormFieldModule,
   MatSnackBarModule,
   MatDialogModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatCheckboxModule,
+  MatTooltipModule
 ];
 
 @NgModule({

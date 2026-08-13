@@ -1,1 +1,184 @@
-<p>destination-list works!</p>
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Destinations</h1>
+
+      <p>
+        Administración de destinos por template.
+      </p>
+
+    </div>
+
+    <button
+      mat-flat-button
+      color="primary"
+      [routerLink]="['/destinations/new']"
+      [queryParams]="
+        selectedTemplateId
+          ? { templateId: selectedTemplateId }
+          : null
+      "
+      [disabled]="templates.length === 0">
+
+      <mat-icon>add</mat-icon>
+
+      Nuevo Destination
+
+    </button>
+
+  </div>
+
+
+  @if (errorMessage) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        {{ errorMessage }}
+      </mat-card-content>
+    </mat-card>
+  }
+
+
+  <mat-card>
+
+    <mat-card-content>
+
+      <div class="filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Template</mat-label>
+          <select
+            matNativeControl
+            [value]="selectedTemplateId ?? ''"
+            (change)="onTemplateChange($event)">
+            @for (template of templates; track template.id) {
+              <option [value]="template.id">
+                {{ template.name }}
+              </option>
+            }
+          </select>
+        </mat-form-field>
+      </div>
+
+      @if (loading) {
+        <div class="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else {
+        <div class="table-container">
+
+          <table
+            mat-table
+            [dataSource]="destinations">
+
+            <ng-container matColumnDef="name">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Nombre
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let destination">
+                {{ destination.name }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="destinationType">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Tipo
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let destination">
+                {{ destination.destinationType }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="target">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Destino
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let destination">
+                {{ getDestinationTarget(destination) }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="active">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Estado
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let destination">
+                @if (destination.active) {
+                  <span class="status active">
+                    Activo
+                  </span>
+                } @else {
+                  <span class="status inactive">
+                    Inactivo
+                  </span>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Acciones
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let destination">
+                <button
+                  mat-icon-button
+                  matTooltip="Eliminar"
+                  (click)="deleteDestination(destination.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns">
+            </tr>
+            <tr
+              mat-row
+              *matRowDef="
+                let row;
+                columns: displayedColumns;
+              ">
+            </tr>
+
+          </table>
+
+
+          @if (destinations.length === 0) {
+            <div class="empty">
+              <mat-icon>hub</mat-icon>
+              <p>
+                No existen destinations para el template seleccionado.
+              </p>
+            </div>
+          }
+
+        </div>
+      }
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>

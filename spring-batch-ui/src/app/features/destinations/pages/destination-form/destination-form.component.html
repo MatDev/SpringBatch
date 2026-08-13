@@ -1,1 +1,157 @@
-<p>destination-form works!</p>
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Nuevo Destination</h1>
+
+      <p>
+        Configura un nuevo destino para un template.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  @if (errorMessage) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        {{ errorMessage }}
+      </mat-card-content>
+    </mat-card>
+  }
+
+
+  <mat-card>
+
+    <mat-card-content>
+
+      @if (loading) {
+        <div class="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else {
+        <form
+          [formGroup]="form"
+          (ngSubmit)="save()">
+
+          <div class="form-grid">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Template</mat-label>
+              <select
+                matNativeControl
+                formControlName="templateId">
+                @for (template of templates; track template.id) {
+                  <option [value]="template.id">
+                    {{ template.name }}
+                  </option>
+                }
+              </select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input
+                matInput
+                formControlName="name"
+                maxlength="100">
+              @if (form.controls.name.hasError('required')) {
+                <mat-error>
+                  El nombre es obligatorio.
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tipo de destino</mat-label>
+              <select
+                matNativeControl
+                formControlName="destinationType">
+                @for (
+                  destinationType of destinationTypes;
+                  track destinationType
+                ) {
+                  <option [value]="destinationType">
+                    {{ destinationType }}
+                  </option>
+                }
+              </select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Target table</mat-label>
+              <input
+                matInput
+                formControlName="targetTable">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Target collection</mat-label>
+              <input
+                matInput
+                formControlName="targetCollection">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Target topic</mat-label>
+              <input
+                matInput
+                formControlName="targetTopic">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Target path</mat-label>
+              <input
+                matInput
+                formControlName="targetPath">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Target URL</mat-label>
+              <input
+                matInput
+                formControlName="targetUrl">
+            </mat-form-field>
+
+          </div>
+
+
+          <div class="options">
+            <mat-checkbox formControlName="active">
+              Destination activo
+            </mat-checkbox>
+          </div>
+
+
+          <div class="actions">
+            <button
+              type="button"
+              mat-button
+              (click)="cancel()"
+              [disabled]="saving">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              mat-flat-button
+              color="primary"
+              [disabled]="saving || templates.length === 0">
+              @if (saving) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                Guardar
+              }
+            </button>
+          </div>
+
+        </form>
+      }
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>

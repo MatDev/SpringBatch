@@ -1,1 +1,227 @@
-<p>history-list works!</p>
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>History</h1>
+      <p>
+        Historial de ejecuciones y reportes.
+      </p>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        {{ errorMessage }}
+      </mat-card-content>
+    </mat-card>
+  }
+
+
+  <mat-card>
+    <mat-card-content>
+
+      <div class="list-header">
+        <h2>Ejecuciones</h2>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <select
+            matNativeControl
+            [value]="selectedStatus"
+            (change)="onStatusChange($event)">
+            @for (
+              status of statusFilters;
+              track status
+            ) {
+              <option [value]="status">
+                {{ status }}
+              </option>
+            }
+          </select>
+        </mat-form-field>
+      </div>
+
+      @if (loading) {
+        <div class="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table
+            mat-table
+            [dataSource]="jobs">
+
+            <ng-container matColumnDef="id">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                ID
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.id }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="jobName">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Job
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.jobName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="templateId">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Template
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.templateId }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Estado
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.status }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="startedAt">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Inicio
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.startedAt || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="finishedAt">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Fin
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                {{ job.finishedAt || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th
+                mat-header-cell
+                *matHeaderCellDef>
+                Reporte
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let job">
+                <button
+                  mat-button
+                  color="primary"
+                  (click)="loadReport(job.id)">
+                  Ver reporte
+                </button>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns">
+            </tr>
+            <tr
+              mat-row
+              *matRowDef="
+                let row;
+                columns: displayedColumns;
+              ">
+            </tr>
+
+          </table>
+
+          @if (jobs.length === 0) {
+            <div class="empty">
+              <mat-icon>history</mat-icon>
+              <p>
+                No existen ejecuciones para el filtro seleccionado.
+              </p>
+            </div>
+          }
+        </div>
+      }
+
+    </mat-card-content>
+  </mat-card>
+
+
+  @if (loadingReport) {
+    <mat-card>
+      <mat-card-content>
+        <div class="loading">
+          <mat-spinner diameter="32"></mat-spinner>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (selectedReport) {
+    <mat-card>
+      <mat-card-content>
+
+        <h2>Reporte #{{ selectedReport.executionId }}</h2>
+
+        <div class="report-grid">
+          <div>
+            <strong>Job:</strong>
+            {{ selectedReport.jobName }}
+          </div>
+          <div>
+            <strong>Estado:</strong>
+            {{ selectedReport.status }}
+          </div>
+          <div>
+            <strong>Total:</strong>
+            {{ selectedReport.totalRecords ?? '-' }}
+          </div>
+          <div>
+            <strong>OK:</strong>
+            {{ selectedReport.successRecords ?? '-' }}
+          </div>
+          <div>
+            <strong>Error:</strong>
+            {{ selectedReport.errorRecords ?? '-' }}
+          </div>
+          <div>
+            <strong>Success rate:</strong>
+            {{ selectedReport.successRate ?? '-' }}
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  }
+
+</div>

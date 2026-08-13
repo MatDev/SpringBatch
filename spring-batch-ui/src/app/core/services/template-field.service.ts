@@ -8,7 +8,7 @@ import {
   TemplateFieldRequest
 } from '../models/template-field.model';
 
-import { API } from '../constants/api.constants';
+import { API } from '../constants/api.constant';
 
 @Injectable({
   providedIn: 'root'

@@ -1,1 +1,174 @@
-<p>template-field-form works!</p>
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Nuevo Field</h1>
+
+      <p>
+        Configura un nuevo field para un template.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  @if (errorMessage) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        {{ errorMessage }}
+      </mat-card-content>
+    </mat-card>
+  }
+
+
+  <mat-card>
+
+    <mat-card-content>
+
+      @if (loading) {
+        <div class="loading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else {
+        <form
+          [formGroup]="form"
+          (ngSubmit)="save()">
+
+          <div class="form-grid">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Template</mat-label>
+              <select
+                matNativeControl
+                formControlName="templateId">
+                @for (template of templates; track template.id) {
+                  <option [value]="template.id">
+                    {{ template.name }}
+                  </option>
+                }
+              </select>
+              @if (form.controls.templateId.hasError('min')) {
+                <mat-error>
+                  Debes seleccionar un template.
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input
+                matInput
+                formControlName="name"
+                maxlength="100">
+              @if (form.controls.name.hasError('required')) {
+                <mat-error>
+                  El nombre es obligatorio.
+                </mat-error>
+              }
+              @if (form.controls.name.hasError('maxlength')) {
+                <mat-error>
+                  Máximo 100 caracteres.
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tipo de campo</mat-label>
+              <select
+                matNativeControl
+                formControlName="fieldType">
+                @for (type of fieldTypes; track type) {
+                  <option [value]="type">
+                    {{ type }}
+                  </option>
+                }
+              </select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Posición</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="position"
+                min="1">
+              @if (form.controls.position.hasError('min')) {
+                <mat-error>
+                  La posición debe ser mayor a 0.
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Largo</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="length"
+                min="1">
+              <mat-hint>
+                Solo para layouts de ancho fijo.
+              </mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Order index</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="orderIndex"
+                min="0">
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+              <mat-label>Valor por defecto</mat-label>
+              <input
+                matInput
+                formControlName="defaultValue">
+            </mat-form-field>
+
+          </div>
+
+
+          <div class="options">
+            <mat-checkbox formControlName="required">
+              Campo requerido
+            </mat-checkbox>
+          </div>
+
+
+          <div class="actions">
+            <button
+              type="button"
+              mat-button
+              (click)="cancel()"
+              [disabled]="saving">
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              mat-flat-button
+              color="primary"
+              [disabled]="saving || templates.length === 0">
+              @if (saving) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                Guardar
+              }
+            </button>
+          </div>
+
+        </form>
+      }
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>
