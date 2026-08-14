@@ -1,9 +1,9 @@
 export const environment = {
   production: false,
 
-  configApi: 'http://localhost:8080',
+  configApi: '/config-api',
 
-  engineApi: 'http://localhost:8081',
+  engineApi: '/engine-api',
 
   apiVersion: '/api/v1'
 };
