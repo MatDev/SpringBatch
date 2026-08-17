@@ -2,6 +2,13 @@ spring:
   application:
     name: config-api
 
+  web:
+    cors:
+      mappings:
+        "[/**]":
+          allowed-origins: "*"
+          allowed-methods: "*"
+          allowed-headers: "*"
   datasource:
     url: jdbc:postgresql://localhost:5432/batch_engine
     username: ${DB_USER:postgres}
